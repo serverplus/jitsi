@@ -21,6 +21,7 @@ import com.sun.jna.*;
 
 import net.java.sip.communicator.util.ServiceUtils;
 
+import org.jitsi.impl.configuration.ConfigurationServiceImpl;
 import org.jitsi.service.configuration.*;
 import org.jitsi.service.fileaccess.*;
 import org.jitsi.service.libjitsi.*;
@@ -38,18 +39,18 @@ import java.util.*;
  * @author Lyubomir Marinov
  */
 public class ConfigurationActivator
-    implements BundleActivator
+        implements BundleActivator
 {
     /** Property name to force a properties file based configuration. */
     public static final String PNAME_USE_PROPFILE_CONFIG =
-        "net.java.sip.communicator.impl.configuration.USE_PROPFILE_CONFIG";
+            "net.java.sip.communicator.impl.configuration.USE_PROPFILE_CONFIG";
 
     /**
      * The <tt>Logger</tt> used by the <tt>ConfigurationActivator</tt> class
      * for logging output.
      */
     private static final Logger logger
-        = Logger.getLogger(ConfigurationActivator.class);
+            = Logger.getLogger(ConfigurationActivator.class);
 
     private static final String DEFAULT_PROPS_FILE_NAME
             = "jitsi-defaults.properties";
@@ -59,7 +60,7 @@ public class ConfigurationActivator
      * for any of the default properties.
      */
     private static final String DEFAULT_OVERRIDES_PROPS_FILE_NAME
-        = "jitsi-default-overrides.properties";
+            = "jitsi-default-overrides.properties";
 
     /**
      * A set of immutable properties deployed with the application during
@@ -68,7 +69,7 @@ public class ConfigurationActivator
      * @see #defaultProperties
      */
     private Map<String, String> immutableDefaultProperties
-        = new HashMap<String, String>();
+            = new HashMap<String, String>();
 
     /**
      * A set of properties deployed with the application during install time.
@@ -78,7 +79,7 @@ public class ConfigurationActivator
      * to <tt>null</tt> would cause for its initial value to be restored.
      */
     private Map<String, String> defaultProperties
-        = new HashMap<String, String>();
+            = new HashMap<String, String>();
 
 
     /**
@@ -94,89 +95,89 @@ public class ConfigurationActivator
      * @throws Exception if anything goes wrong
      */
 
-     private void loadDefaultProperties(String fileName)
-     {
-         try
-         {
-             Properties fileProps = new Properties();
+    private void loadDefaultProperties(String fileName)
+    {
+        try
+        {
+            Properties fileProps = new Properties();
 
-             InputStream fileStream;
-             if(OSUtils.IS_ANDROID)
-             {
-                 fileStream
-                         = getClass().getClassLoader()
-                                 .getResourceAsStream(fileName);
-             }
-             else
-             {
-                 logger.info("Normal classloader");
-                 fileStream = ClassLoader.getSystemResourceAsStream(fileName);
-             }
+            InputStream fileStream;
+            if(OSUtils.IS_ANDROID)
+            {
+                fileStream
+                        = getClass().getClassLoader()
+                        .getResourceAsStream(fileName);
+            }
+            else
+            {
+                logger.info("Normal classloader");
+                fileStream = ClassLoader.getSystemResourceAsStream(fileName);
+            }
 
-             if(fileStream == null)
-             {
-                 logger.info("failed to find " + fileName + " with class "
-                     + "loader, will continue without it.");
-                 return;
-             }
+            if(fileStream == null)
+            {
+                logger.info("failed to find " + fileName + " with class "
+                        + "loader, will continue without it.");
+                return;
+            }
 
-             fileProps.load(fileStream);
-             fileStream.close();
+            fileProps.load(fileStream);
+            fileStream.close();
 
-             // now get those properties and place them into the mutable and
-             // immutable properties maps.
-             for (Map.Entry<Object, Object> entry : fileProps.entrySet())
-             {
-                 String name  = (String) entry.getKey();
-                 String value = (String) entry.getValue();
+            // now get those properties and place them into the mutable and
+            // immutable properties maps.
+            for (Map.Entry<Object, Object> entry : fileProps.entrySet())
+            {
+                String name  = (String) entry.getKey();
+                String value = (String) entry.getValue();
 
-                 if (   name == null
-                     || value == null
-                     || name.trim().length() == 0)
-                 {
-                     continue;
-                 }
+                if (   name == null
+                        || value == null
+                        || name.trim().length() == 0)
+                {
+                    continue;
+                }
 
-                 if (name.startsWith("*"))
-                 {
-                     name = name.substring(1);
+                if (name.startsWith("*"))
+                {
+                    name = name.substring(1);
 
-                     if(name.trim().length() == 0)
-                     {
-                         continue;
-                     }
+                    if(name.trim().length() == 0)
+                    {
+                        continue;
+                    }
 
-                     //it seems that we have a valid default immutable property
-                     immutableDefaultProperties.put(name, value);
+                    //it seems that we have a valid default immutable property
+                    immutableDefaultProperties.put(name, value);
 
-                     //in case this is an override, make sure we remove previous
-                     //definitions of this property
-                     defaultProperties.remove(name);
-                 }
-                 else
-                 {
-                     //this property is a regular, mutable default property.
-                     defaultProperties.put(name, value);
+                    //in case this is an override, make sure we remove previous
+                    //definitions of this property
+                    defaultProperties.remove(name);
+                }
+                else
+                {
+                    //this property is a regular, mutable default property.
+                    defaultProperties.put(name, value);
 
-                     //in case this is an override, make sure we remove previous
-                     //definitions of this property
-                     immutableDefaultProperties.remove(name);
-                 }
-             }
-         }
-         catch (Exception ex)
-         {
-             //we can function without defaults so we are just logging those.
-             logger.info("No defaults property file loaded: " + fileName
-                 + ". Not a problem.");
+                    //in case this is an override, make sure we remove previous
+                    //definitions of this property
+                    immutableDefaultProperties.remove(name);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            //we can function without defaults so we are just logging those.
+            logger.info("No defaults property file loaded: " + fileName
+                    + ". Not a problem.");
 
-             if(logger.isDebugEnabled())
-                 logger.debug("load exception", ex);
-         }
+            if(logger.isDebugEnabled())
+                logger.debug("load exception", ex);
+        }
     }
 
     public void start(BundleContext bundleContext)
-        throws Exception
+            throws Exception
     {
         loadDefaultProperties(DEFAULT_PROPS_FILE_NAME);
         loadDefaultProperties(DEFAULT_OVERRIDES_PROPS_FILE_NAME);
@@ -188,9 +189,9 @@ public class ConfigurationActivator
         else
         {
             this.cs = new JdbcConfigService(
-                ServiceUtils.getService(
-                    bundleContext,
-                    FileAccessService.class));
+                    ServiceUtils.getService(
+                            bundleContext,
+                            FileAccessService.class));
         }
 
         bundleContext.registerService(
@@ -208,7 +209,7 @@ public class ConfigurationActivator
             return true;
         }
         FileAccessService fas
-            = ServiceUtils.getService(bundleContext, FileAccessService.class);
+                = ServiceUtils.getService(bundleContext, FileAccessService.class);
         if (fas == null)
         {
             return true;
@@ -218,7 +219,7 @@ public class ConfigurationActivator
             return fas.getPrivatePersistentFile(
                     ".usepropfileconfig",
                     FileCategory.PROFILE
-                ).exists();
+            ).exists();
         }
         catch (Exception ise)
         {
@@ -244,7 +245,7 @@ public class ConfigurationActivator
      * this bundle and while unregistering the service in question
      */
     public void stop(BundleContext bundleContext)
-        throws Exception
+            throws Exception
     {
         this.cs.storeConfiguration();
         this.cs = null;
@@ -266,15 +267,15 @@ public class ConfigurationActivator
         {
             // let's check config file and config folder
             File homeFolder
-                = new File(cs.getScHomeDirLocation(), cs.getScHomeDirName());
+                    = new File(cs.getScHomeDirLocation(), cs.getScHomeDirName());
             Set<PosixFilePermission> perms =
-                new HashSet<PosixFilePermission>()
-                {{
-                    add(PosixFilePermission.OWNER_READ);
-                    add(PosixFilePermission.OWNER_WRITE);
-                    add(PosixFilePermission.OWNER_EXECUTE);
-                }};
-                Files.setPosixFilePermissions(
+                    new HashSet<PosixFilePermission>()
+                    {{
+                        add(PosixFilePermission.OWNER_READ);
+                        add(PosixFilePermission.OWNER_WRITE);
+                        add(PosixFilePermission.OWNER_EXECUTE);
+                    }};
+            Files.setPosixFilePermissions(
                     Paths.get(homeFolder.getAbsolutePath()), perms);
 
             String fileName = cs.getConfigurationFilename();
@@ -284,12 +285,12 @@ public class ConfigurationActivator
                 if(cf.exists())
                 {
                     perms = new HashSet<PosixFilePermission>()
-                        {{
-                            add(PosixFilePermission.OWNER_READ);
-                            add(PosixFilePermission.OWNER_WRITE);
-                        }};
+                    {{
+                        add(PosixFilePermission.OWNER_READ);
+                        add(PosixFilePermission.OWNER_WRITE);
+                    }};
                     Files.setPosixFilePermissions(
-                        Paths.get(cf.getAbsolutePath()), perms);
+                            Paths.get(cf.getAbsolutePath()), perms);
                 }
             }
         }
