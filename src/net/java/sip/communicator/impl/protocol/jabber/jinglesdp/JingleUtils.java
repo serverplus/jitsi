@@ -21,16 +21,15 @@ import java.net.*;
 import java.util.*;
 
 import net.java.sip.communicator.impl.protocol.jabber.*;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.*;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.ContentPacketExtension.CreatorEnum;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.ContentPacketExtension.SendersEnum;
+import org.jitsi.xmpp.extensions.jingle.*;
+import org.jitsi.xmpp.extensions.jingle.ContentPacketExtension.*;
 import net.java.sip.communicator.service.protocol.media.*;
 import net.java.sip.communicator.util.*;
 import net.java.sip.communicator.util.Logger;
 
 import org.jitsi.service.neomedia.*;
 import org.jitsi.service.neomedia.format.*;
-import org.jitsi.util.*;
+import org.jitsi.utils.*;
 
 /**
  * The class contains a number of utility methods that are meant to facilitate
@@ -179,7 +178,7 @@ public class JingleUtils
             else
                 paramsMap.put(paramName, param.getValue());
         }
-        
+
         for(String attr : payloadType.getAttributeNames())
         {
             //video-related attributes in payload-type element
@@ -686,7 +685,7 @@ public class JingleUtils
         if (desc != null)
         {
             String rtpMedia = desc.getMedia().toLowerCase();
-            if (!StringUtils.isNullOrEmpty(rtpMedia))
+            if (org.apache.commons.lang3.StringUtils.isNotEmpty(rtpMedia))
             {
                 mediaTypeName = rtpMedia;
             }

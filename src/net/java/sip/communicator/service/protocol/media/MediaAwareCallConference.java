@@ -24,9 +24,10 @@ import java.util.*;
 import org.jitsi.service.neomedia.*;
 import org.jitsi.service.neomedia.device.*;
 import org.jitsi.util.*;
-import org.jitsi.util.event.*;
+import org.jitsi.utils.*;
 
 import net.java.sip.communicator.service.protocol.*;
+import org.jitsi.utils.event.*;
 
 /**
  * Extends <tt>CallConference</tt> to represent the media-specific information
@@ -83,6 +84,11 @@ public class MediaAwareCallConference
                 MediaAwareCallConference.this.propertyChange(ev);
             }
         };
+
+    /**
+     * Sync around creating/removing audio and video translator.
+     */
+    private final Object translatorSyncRoot = new Object();
 
     /**
      * The <tt>RTPTranslator</tt> which forwards video RTP and RTCP traffic
@@ -253,16 +259,19 @@ public class MediaAwareCallConference
 
         if (getCallCount() == 0)
         {
-            if (videoRTPTranslator != null)
+            synchronized (translatorSyncRoot)
             {
-                videoRTPTranslator.dispose();
-                videoRTPTranslator = null;
-            }
+                if(videoRTPTranslator != null)
+                {
+                    videoRTPTranslator.dispose();
+                    videoRTPTranslator = null;
+                }
 
-            if (audioRTPTranslator != null)
-            {
-                audioRTPTranslator.dispose();
-                audioRTPTranslator = null;
+                if(audioRTPTranslator != null)
+                {
+                    audioRTPTranslator.dispose();
+                    audioRTPTranslator = null;
+                }
             }
         }
     }
@@ -381,26 +390,28 @@ public class MediaAwareCallConference
         if (MediaType.VIDEO.equals(mediaType)
                 && (!OSUtils.IS_ANDROID || isConferenceFocus()))
         {
-            if (videoRTPTranslator == null)
+            synchronized (translatorSyncRoot)
             {
-                videoRTPTranslator
-                    = ProtocolMediaActivator
-                        .getMediaService()
-                            .createRTPTranslator();
+                if(videoRTPTranslator == null)
+                {
+                    videoRTPTranslator = ProtocolMediaActivator
+                        .getMediaService().createRTPTranslator();
+                }
+                return videoRTPTranslator;
             }
-            return videoRTPTranslator;
         }
 
         if (this.translator)
         {
-            if(audioRTPTranslator == null)
+            synchronized (translatorSyncRoot)
             {
-                audioRTPTranslator
-                    = ProtocolMediaActivator
-                        .getMediaService()
-                            .createRTPTranslator();
+                if(audioRTPTranslator == null)
+                {
+                    audioRTPTranslator = ProtocolMediaActivator
+                        .getMediaService().createRTPTranslator();
+                }
+                return audioRTPTranslator;
             }
-            return audioRTPTranslator;
         }
 
         return null;

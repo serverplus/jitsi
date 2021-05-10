@@ -33,8 +33,11 @@ import org.jitsi.service.configuration.*;
 import org.jitsi.service.neomedia.*;
 import org.jitsi.service.neomedia.codec.*;
 import org.jitsi.service.resources.*;
-import org.jitsi.util.*;
+import org.jitsi.util.OSUtils;
+import org.jitsi.utils.*;
 import org.osgi.framework.*;
+
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Cares about all common configurations. Storing and retrieving configuration
@@ -410,6 +413,20 @@ public class ConfigurationUtils
      */
     public static final String ALERTER_ENABLED_PROP
         = "plugin.chatalerter.ENABLED";
+
+    /**
+     * The name of the property which indicates whether the user should be
+     * warned that master password is not set.
+     */
+    private static final String MASTER_PASS_WARNING_PROP
+        = "net.java.sip.communicator.impl.gui.main"
+            + ".SHOW_MASTER_PASSWORD_WARNING";
+
+    /**
+     * Indicates whether the user should be warned
+     * that master password is not set.
+     */
+    private static boolean showMasterPasswordWarning;
 
     /**
      * Indicates if window (task bar or dock icon) alerter is enabled.
@@ -963,6 +980,9 @@ public class ConfigurationUtils
             SMS_MSG_NOTIFY_TEXT_DISABLED_PROP,
             isSmsNotifyTextDisabled
         );
+
+        showMasterPasswordWarning
+            = configService.getBoolean(MASTER_PASS_WARNING_PROP, true);
     }
 
     private static boolean isPinnedToTaskBar()
@@ -1929,6 +1949,25 @@ public class ConfigurationUtils
     public static boolean isHideDomainInReceivedCallDialogEnabled()
     {
         return isHideDomainInReceivedCallDialogEnabled;
+    }
+
+    /**
+     * Whether to show or not the master password warning.
+     * @return <code>true</code> to show it, and <code>false</code> otherwise.
+     */
+    public static boolean showMasterPasswordWarning()
+    {
+        return showMasterPasswordWarning;
+    }
+
+    /**
+     * Updates the value of whether to show master password warning.
+     * @param value the new value to set.
+     */
+    public static void setShowMasterPasswordWarning(boolean value)
+    {
+        showMasterPasswordWarning = value;
+        configService.setProperty(MASTER_PASS_WARNING_PROP, value);
     }
 
     /**
@@ -2915,7 +2954,7 @@ public class ConfigurationUtils
     {
         String enabledSslProtocols = configService
             .getString("gov.nist.javax.sip.TLS_CLIENT_PROTOCOLS");
-        if(StringUtils.isNullOrEmpty(enabledSslProtocols, true))
+        if(StringUtils.isBlank(enabledSslProtocols))
         {
             SSLSocket temp;
             try

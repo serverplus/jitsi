@@ -5,10 +5,11 @@ Bundle-Vendor: jitsi.org
 Bundle-Version: 0.0.1
 Bundle-SymbolicName: net.java.sip.communicator.globaldisplaydetails
 Import-Package: org.jitsi.service.resources,
+ org.apache.commons.lang3,
  org.jitsi.service.configuration,
  net.java.sip.communicator.util,
  org.osgi.framework,
- org.jitsi.util,
+ org.jitsi.utils,
  net.java.sip.communicator.service.protocol,
  net.java.sip.communicator.service.protocol.globalstatus,
  net.java.sip.communicator.service.protocol.event,

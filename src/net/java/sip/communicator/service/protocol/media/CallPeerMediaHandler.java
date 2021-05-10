@@ -33,6 +33,8 @@ import org.jitsi.service.neomedia.device.*;
 import org.jitsi.service.neomedia.event.*;
 import org.jitsi.service.neomedia.format.*;
 import org.jitsi.util.event.*;
+import org.jitsi.utils.*;
+import org.jitsi.utils.event.*;
 
 /**
  * A utility class implementing media control code shared between current
@@ -1529,7 +1531,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?,?,?>>
     /**
      * Removes from this instance and cleans up the <tt>SrtpControl</tt> which
      * are not of a specific <tt>SrtpControlType</tt>.
-     * 
+     *
      * @param mediaType the <tt>MediaType</tt> of the <tt>SrtpControl</tt> to be
      * examined
      * @param srtpControlType the <tt>SrtpControlType</tt> of the
@@ -1593,15 +1595,16 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?,?,?>>
      * @param stream <tt>MediaStream</tt> non-null stream
      * @param mediaType <tt>MediaType</tt>
      */
-    protected void sendHolePunchPacket(MediaStream stream, MediaType mediaType)
+    public void sendHolePunchPacket(MediaStream stream, MediaType mediaType)
     {
         if (disableHolePunching)
             return;
 
         // send as a hole punch packet a constructed rtp packet
         // has the correct payload type and ssrc
-        RawPacket packet = new RawPacket(
-            HOLE_PUNCH_PACKET, 0, RawPacket.FIXED_HEADER_SIZE);
+        RawPacket packet
+            = new RawPacket(
+                    HOLE_PUNCH_PACKET.clone(), 0, HOLE_PUNCH_PACKET.length);
 
         MediaFormat format = stream.getFormat();
         byte payloadType = format.getRTPPayloadType();
@@ -1676,6 +1679,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?,?,?>>
      * again.
      */
     public void setLocallyOnHold(boolean locallyOnHold)
+        throws OperationFailedException
     {
         if (logger.isDebugEnabled())
             logger.debug("Setting locally on hold: " + locallyOnHold);
@@ -1704,15 +1708,10 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?,?,?>>
             if(videoStream != null)
             {
                 direction = getPeer().getCall().isConferenceFocus()
-                        ? MediaDirection.INACTIVE
+                    ? MediaDirection.INACTIVE
                         : videoStream.getDirection().and(MediaDirection.SENDONLY);
-                /*
-                 * Set the video direction to INACTIVE, because currently we
-                 * cannot mute video streams.
-                 */
-                videoStream.setDirection(MediaDirection.INACTIVE);
-                //videoStream.setDirection(direction);
-                //videoStream.setMute(true);
+                videoStream.setDirection(direction);
+                videoStream.setMute(true);
             }
         }
         /*

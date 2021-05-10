@@ -31,10 +31,11 @@ import net.java.sip.communicator.service.notification.*;
 import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.plugin.desktoputil.*;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jitsi.dnssec.validator.ValidatingResolver;
 import org.jitsi.service.configuration.*;
 import org.jitsi.service.resources.*;
-import org.jitsi.util.*;
+import org.jitsi.utils.*;
 import org.xbill.DNS.*;
 
 /**
@@ -88,7 +89,7 @@ public class ConfigurableDnssecResolver
         for (String propName : propNames)
         {
             String value = config.getProperty(propName);
-            if (!StringUtils.isNullOrEmpty(value))
+            if (StringUtils.isNotEmpty(value))
             {
                 config.put(propName, value);
             }
@@ -402,7 +403,7 @@ public class ConfigurableDnssecResolver
     {
         String forwarders = DnsUtilActivator.getConfigurationService()
             .getString(DnsUtilActivator.PNAME_DNSSEC_NAMESERVERS);
-        if(!StringUtils.isNullOrEmpty(forwarders, true))
+        if(StringUtils.isNotBlank(forwarders))
         {
             if(logger.isTraceEnabled())
             {

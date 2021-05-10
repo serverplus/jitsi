@@ -31,11 +31,12 @@ import net.java.sip.communicator.service.protocol.media.*;
 import net.java.sip.communicator.util.*;
 import net.java.sip.communicator.util.Logger;
 
+import org.apache.commons.lang3.StringUtils;
 import org.ice4j.ice.sdp.*;
 import org.jitsi.service.neomedia.*;
-import org.jitsi.service.neomedia.MediaType;
 import org.jitsi.service.neomedia.format.*;
-import org.jitsi.util.*;
+import org.jitsi.utils.*;
+import org.jitsi.utils.MediaType;
 import org.opentelecoms.javax.sdp.*;
 
 /**
@@ -610,7 +611,7 @@ public class SdpUtils
                 : Connection.IP4;
 
             //o
-            if (StringUtils.isNullOrEmpty(userName) )
+            if (StringUtils.isEmpty(userName) )
                 userName = "jitsi.org";
             else
                 userName += "-jitsi.org";

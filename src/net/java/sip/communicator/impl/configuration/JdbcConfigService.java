@@ -24,11 +24,14 @@ import java.sql.Statement;
 import java.util.*;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jitsi.service.configuration.*;
 import org.jitsi.service.fileaccess.*;
 import org.jitsi.util.*;
 
 import com.google.common.collect.*;
+import org.jitsi.utils.*;
+import org.jitsi.utils.logging.*;
 
 /**
  * Implementation of the {@link ConfigurationService} based on JDBC.
@@ -990,7 +993,7 @@ public final class JdbcConfigService
             return;
 
         Pattern exclusion = null;
-        if (!StringUtils.isNullOrEmpty(excludePattern))
+        if (StringUtils.isNotEmpty(excludePattern))
         {
             exclusion = Pattern.compile(
                 excludePattern, Pattern.CASE_INSENSITIVE);

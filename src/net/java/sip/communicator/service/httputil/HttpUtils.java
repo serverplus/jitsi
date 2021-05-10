@@ -27,6 +27,7 @@ import javax.net.ssl.*;
 import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.service.gui.*;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.*;
 import org.apache.http.Header;
 import org.apache.http.ProtocolException;
@@ -46,6 +47,7 @@ import org.apache.http.params.*;
 import org.apache.http.protocol.*;
 import org.apache.http.util.*;
 import org.jitsi.util.*;
+import org.jitsi.utils.*;
 
 /**
  * Common http utils querying http locations, handling redirects, self-signed
@@ -579,7 +581,7 @@ public class HttpUtils
             // don't allow empty username
             while(creds == null
                   || creds.getUserPrincipal() == null
-                  || StringUtils.isNullOrEmpty(
+                  || StringUtils.isEmpty(
                         creds.getUserPrincipal().getName()))
             {
                 creds =  prov.getCredentials(

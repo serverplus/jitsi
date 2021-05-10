@@ -27,6 +27,7 @@ import net.java.sip.communicator.plugin.desktoputil.*;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.*;
+import net.java.sip.communicator.util.FileUtils;
 
 /**
  * The single chat implementation of the <tt>ChatTransport</tt> interface that
@@ -403,6 +404,7 @@ public class MetaContactChatTransport
      */
     public void correctInstantMessage(String message, String mimeType,
             String correctedMessageUID)
+        throws OperationFailedException
     {
         if (!allowsMessageCorrections())
         {

@@ -1,7 +1,7 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
  *
- * Copyright @ 2015 Atlassian Pty Ltd
+ * Copyright @ 2018 - present 8x8, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,14 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.impl.protocol.jabber.sasl.*;
 import net.java.sip.communicator.service.certificate.*;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import org.jivesoftware.smack.*;
+import org.jxmpp.jid.*;
 
 import javax.net.ssl.*;
+import java.io.*;
 import java.security.*;
 
 /**
@@ -36,35 +37,9 @@ public class LoginByPasswordStrategy
 {
     private final AbstractProtocolProviderService protocolProvider;
     private final AccountID accountID;
+    private ConnectionConfiguration.Builder ccBuilder;
 
     private String password;
-
-    /**
-     * Disables use of custom digest md5 per account.
-     */
-    private String DISABLE_CUSTOM_DIGEST_MD5_ACCOUNT_PROP =
-        "DISABLE_CUSTOM_DIGEST_MD5";
-
-    /**
-     * Disables use of custom digest md5.
-     */
-    private String DISABLE_CUSTOM_DIGEST_MD5_CONFIG_PROP =
-        "net.java.sip.communicator.impl.protocol" +
-            ".jabber.DISABLE_CUSTOM_DIGEST_MD5";
-
-    /**
-     * SASLAuthentication currently supports only global mechanisms setting
-     * so per account property is not of much use, but will keep it for
-     * compatibility with old versions.
-     * We try to modify it only once or some concurrent modification exceptions
-     * can occur.
-     */
-    private static boolean saslMechanismsInitialized = false;
-
-    /**
-     * Used to lock the modifying mechanisms and any login that can occur.
-     */
-    private static Object modifySASLMechanisms = new Object();
 
     /**
      * Create a login strategy that logs in using user credentials (username
@@ -72,13 +47,15 @@ public class LoginByPasswordStrategy
      * @param protocolProvider  protocol provider service to fire registration
      *                          change events.
      * @param accountID The accountID to use for the login.
+     * @param ccBuilder
      */
     public LoginByPasswordStrategy(
-            AbstractProtocolProviderService protocolProvider,
-            AccountID accountID)
+        AbstractProtocolProviderService protocolProvider,
+        AccountID accountID, ConnectionConfiguration.Builder ccBuilder)
     {
         this.protocolProvider = protocolProvider;
         this.accountID = accountID;
+        this.ccBuilder = ccBuilder;
     }
 
     /**
@@ -110,50 +87,16 @@ public class LoginByPasswordStrategy
      * Performs the login on an XMPP connection using SASL PLAIN.
      *
      * @param connection The connection on which the login is performed.
-     * @param userName The username for the login.
-     * @param resource The XMPP resource.
+     * @param jid the full JID of the user to login
      * @return always true.
      * @throws XMPPException
      */
-    public boolean login(Connection connection, String userName,
-            String resource)
-            throws XMPPException
+    @Override
+    public boolean login(AbstractXMPPConnection connection, EntityFullJid jid)
+        throws XMPPException, InterruptedException, IOException, SmackException
     {
-        synchronized(modifySASLMechanisms)
-        {
-            boolean disableCustomDigestMD5PerAccount
-                        = accountID.getAccountPropertyBoolean(
-                        DISABLE_CUSTOM_DIGEST_MD5_ACCOUNT_PROP,
-                        false);
-
-            if(!saslMechanismsInitialized || disableCustomDigestMD5PerAccount)
-            {
-                SASLAuthentication.supportSASLMechanism("PLAIN", 0);
-
-                // Insert our sasl mechanism implementation
-                // in order to support some incompatible servers
-                boolean disableCustomDigestMD5
-                    = disableCustomDigestMD5PerAccount
-                    || JabberActivator.getConfigurationService().getBoolean(
-                        DISABLE_CUSTOM_DIGEST_MD5_CONFIG_PROP, false);
-
-                if(!disableCustomDigestMD5)
-                {
-                    SASLAuthentication.unregisterSASLMechanism("DIGEST-MD5");
-                    SASLAuthentication.registerSASLMechanism("DIGEST-MD5",
-                        SASLDigestMD5Mechanism.class);
-                    SASLAuthentication.supportSASLMechanism("DIGEST-MD5");
-                }
-
-                saslMechanismsInitialized = true;
-            }
-        }
-
-        synchronized(modifySASLMechanisms)
-        {
-            connection.login(userName, password, resource);
-        }
-
+        connection.login(
+            jid.getLocalpart(), password, jid.getResourceOrEmpty());
         return true;
     }
 
@@ -251,5 +194,11 @@ public class LoginByPasswordStrategy
                 cachedCredentials = credentials;
         }
         return cachedCredentials;
+    }
+
+    @Override
+    public ConnectionConfiguration.Builder getConnectionConfigurationBuilder()
+    {
+        return ccBuilder;
     }
 }
