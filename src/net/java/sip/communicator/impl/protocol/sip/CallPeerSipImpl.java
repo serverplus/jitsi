@@ -1013,7 +1013,7 @@ public class CallPeerSipImpl
         try {
             holdTimer.cancel();
         } catch (Exception ex){ holdTimer = null; }
-        CallPeerState peerState = getState();
+        //CallPeerState peerState = getState();
 
         if (peerState.equals(CallPeerState.CONNECTED)
             || CallPeerState.CONNECTING_INCOMING_CALL.equals(peerState)
