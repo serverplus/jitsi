@@ -18,11 +18,14 @@
 package net.java.sip.communicator.service.protocol.media;
 
 import net.java.sip.communicator.service.protocol.*;
+
+import org.apache.commons.lang3.StringUtils;
 import org.jitsi.service.configuration.*;
 import org.jitsi.service.neomedia.*;
 import org.jitsi.service.neomedia.codec.*;
 import org.jitsi.service.neomedia.format.*;
 import org.jitsi.util.*;
+import org.jitsi.utils.*;
 
 import java.util.*;
 
@@ -85,7 +88,7 @@ public abstract class AbstractOperationSetDTMF
         int minimalToneDuration
             = OperationSetDTMF.DEFAULT_DTMF_MINIMAL_TONE_DURATION;
         // Check if there is a specific value for this account.
-        if(!StringUtils.isNullOrEmpty(minimalToneDurationString))
+        if(StringUtils.isNotEmpty(minimalToneDurationString))
         {
             minimalToneDuration = Integer.valueOf(minimalToneDurationString);
         }
@@ -213,7 +216,7 @@ public abstract class AbstractOperationSetDTMF
             = accountID.getAccountPropertyString("DTMF_TONE_VOLUME");
         int vol = OperationSetDTMF.DEFAULT_DTMF_TONE_VOLUME;
         // Check if there is a specific value for this account.
-        if(!StringUtils.isNullOrEmpty(volumeString))
+        if(StringUtils.isNotEmpty(volumeString))
         {
             vol = Integer.valueOf(vol);
         }

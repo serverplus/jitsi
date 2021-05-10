@@ -24,7 +24,9 @@ import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.*;
 
-import org.jivesoftware.smack.util.StringUtils;
+import org.jxmpp.jid.impl.*;
+import org.jxmpp.stringprep.*;
+import org.jxmpp.util.*;
 
 /**
  * Tests multi user chat functionalities.
@@ -202,7 +204,7 @@ public class TestOperationSetMultiUserChat2
     {
         fixture.clearProvidersLists();
 
-        Object o = new Object();
+        final Object o = new Object();
         synchronized (o)
         {
             o.wait(2000);
@@ -541,9 +543,9 @@ public class TestOperationSetMultiUserChat2
 
         ChatRoom foundRoom = null;
         /*
-         //findRoom always returns ChatRoom instance. If it doesn't exists in 
+         //findRoom always returns ChatRoom instance. If it doesn't exists in
          //the cache it creates an instance of ChatRoom.
-        
+
         try
         {
             foundRoom = opSetMUC1.findRoom("WhoCreatedThatRoom");
@@ -578,7 +580,7 @@ public class TestOperationSetMultiUserChat2
      */
     public void testInviteReject()
         throws OperationFailedException,
-               OperationNotSupportedException
+               OperationNotSupportedException, XmppStringprepException
     {
         MUCEventCollector opSet1Collector =
             new MUCEventCollector(opSetMUC1, MUCEventCollector.EVENT_INVITE);
@@ -610,8 +612,8 @@ public class TestOperationSetMultiUserChat2
         ChatRoomInvitation invitation = invitationReceivedEvent.getInvitation();
 
         assertEquals("The inviter is not the expected user",
-            StringUtils.parseBareAddress(fixture.userID1),
-            StringUtils.parseBareAddress(invitation.getInviter()));
+            JidCreate.bareFrom(fixture.userID1),
+            JidCreate.bareFrom(invitation.getInviter()));
 
         assertEquals("The invitation reason received differs from the one sent"
             , "testInviteReject", invitation.getReason());
@@ -632,8 +634,8 @@ public class TestOperationSetMultiUserChat2
             opSet1Collector.collectedEvents.get(0);
 
         assertEquals("the invitation has been declined  by an unexpected user",
-            StringUtils.parseBareAddress(fixture.userID2),
-            StringUtils.parseBareAddress(invitationRejectedEvent.getInvitee()));
+            JidCreate.bareFrom(fixture.userID2),
+            JidCreate.bareFrom(invitationRejectedEvent.getInvitee()));
 
         assertEquals("the invitation is not declined for the expected reason",
             "testInviteReject", invitationRejectedEvent.getReason());
@@ -646,7 +648,7 @@ public class TestOperationSetMultiUserChat2
      */
     public void testInviteJoin()
         throws OperationFailedException,
-               OperationNotSupportedException
+               OperationNotSupportedException, XmppStringprepException
     {
         String testRoomName = testRoomBaseName + roomID++;
 
@@ -678,8 +680,8 @@ public class TestOperationSetMultiUserChat2
         ChatRoomInvitation invitation = invitationReceivedEvent.getInvitation();
 
         assertEquals("The inviter is not the expected user",
-            StringUtils.parseBareAddress(fixture.userID1),
-            StringUtils.parseBareAddress(invitation.getInviter()));
+            JidCreate.bareFrom(fixture.userID1),
+            JidCreate.bareFrom(invitation.getInviter()));
 
         assertEquals("The invitation reason received differs from the one sent"
             , "testInviteAccept", invitation.getReason());
@@ -1438,7 +1440,7 @@ public class TestOperationSetMultiUserChat2
             (ChatRoomMemberRoleChangeEvent) roomUser3Col.collectedEvents.get(0);
 
         assertEquals("Collected event does not belong to the right chatroom",
-            roomName, StringUtils.parseName(
+            roomName, XmppStringUtils.parseLocalpart(
                 roleEventUser1.getSourceChatRoom().getName()));
         assertEquals("Collected event does not belong to the expected user",
             fixture.userID2,
@@ -1449,7 +1451,7 @@ public class TestOperationSetMultiUserChat2
             ChatRoomMemberRole.MEMBER, roleEventUser1.getNewRole());
 
         assertEquals("Collected event does not belong to the right chatroom",
-            roomName, StringUtils.parseName(
+            roomName, XmppStringUtils.parseLocalpart(
                 roleEventUser3.getSourceChatRoom().getName()));
         assertEquals("Collected event does not belong to the expected user",
             fixture.userID2,
@@ -1515,7 +1517,7 @@ public class TestOperationSetMultiUserChat2
             (ChatRoomMemberRoleChangeEvent) roomUser3Col.collectedEvents.get(0);
 
         assertEquals("Collected event does not belong to the right chatroom",
-            roomName, StringUtils.parseName(
+            roomName, XmppStringUtils.parseLocalpart(
                 roleEventUser1.getSourceChatRoom().getName()));
         assertEquals("Collected event does not belong to the expected user",
             fixture.userID2,
@@ -1526,7 +1528,7 @@ public class TestOperationSetMultiUserChat2
             ChatRoomMemberRole.MODERATOR, roleEventUser1.getNewRole());
 
         assertEquals("Collected event does not belong to the right chatroom",
-            roomName, StringUtils.parseName(
+            roomName, XmppStringUtils.parseLocalpart(
                 roleEventUser3.getSourceChatRoom().getName()));
         assertEquals("Collected event does not belong to the expected user",
             fixture.userID2,
@@ -1594,7 +1596,7 @@ public class TestOperationSetMultiUserChat2
             (ChatRoomMemberRoleChangeEvent) roomUser2Col.collectedEvents.get(0);
 
         assertEquals("Collected event does not belong to the right chatroom",
-            roomName, StringUtils.parseName(
+            roomName, XmppStringUtils.parseLocalpart(
                 roleEventUser1.getSourceChatRoom().getName()));
         assertEquals("Collected event does not belong to the expected user",
             fixture.userID3,
@@ -1605,7 +1607,7 @@ public class TestOperationSetMultiUserChat2
             ChatRoomMemberRole.SILENT_MEMBER, roleEventUser1.getNewRole());
 
         assertEquals("Collected event does not belong to the right chatroom",
-            roomName, StringUtils.parseName(
+            roomName, XmppStringUtils.parseLocalpart(
                 roleEventUser2.getSourceChatRoom().getName()));
         assertEquals("Collected event does not belong to the expected user",
             fixture.userID3,
@@ -1671,7 +1673,7 @@ public class TestOperationSetMultiUserChat2
             (ChatRoomMemberRoleChangeEvent) roomUser2Col.collectedEvents.get(0);
 
         assertEquals("Collected event does not belong to the right chatroom",
-            roomName, StringUtils.parseName(
+            roomName, XmppStringUtils.parseLocalpart(
                 roleEventUser1.getSourceChatRoom().getName()));
         assertEquals("Collected event does not belong to the expected user",
             fixture.userID3,
@@ -1682,7 +1684,7 @@ public class TestOperationSetMultiUserChat2
             ChatRoomMemberRole.MEMBER, roleEventUser1.getNewRole());
 
         assertEquals("Collected event does not belong to the right chatroom",
-            roomName, StringUtils.parseName(
+            roomName, XmppStringUtils.parseLocalpart(
                 roleEventUser2.getSourceChatRoom().getName()));
         assertEquals("Collected event does not belong to the expected user",
             fixture.userID3,
@@ -1750,7 +1752,7 @@ public class TestOperationSetMultiUserChat2
             (ChatRoomMemberRoleChangeEvent) roomUser3Col.collectedEvents.get(0);
 
         assertEquals("Collected event does not belong to the right chatroom",
-            roomName, StringUtils.parseName(
+            roomName, XmppStringUtils.parseLocalpart(
                 roleEventUser1.getSourceChatRoom().getName()));
         assertEquals("Collected event does not belong to the expected user",
             fixture.userID2,
@@ -1761,7 +1763,7 @@ public class TestOperationSetMultiUserChat2
             ChatRoomMemberRole.ADMINISTRATOR, roleEventUser1.getNewRole());
 
         assertEquals("Collected event does not belong to the right chatroom",
-            roomName, StringUtils.parseName(
+            roomName, XmppStringUtils.parseLocalpart(
                 roleEventUser3.getSourceChatRoom().getName()));
         assertEquals("Collected event does not belong to the expected user",
             fixture.userID2,
@@ -1826,7 +1828,7 @@ public class TestOperationSetMultiUserChat2
             (ChatRoomMemberRoleChangeEvent) roomUser3Col.collectedEvents.get(0);
 
         assertEquals("Collected event does not belong to the right chatroom",
-            roomName, StringUtils.parseName(
+            roomName, XmppStringUtils.parseLocalpart(
                 roleEventUser1.getSourceChatRoom().getName()));
         assertEquals("Collected event does not belong to the expected user",
             fixture.userID2,
@@ -1837,7 +1839,7 @@ public class TestOperationSetMultiUserChat2
             ChatRoomMemberRole.OWNER, roleEventUser1.getNewRole());
 
         assertEquals("Collected event does not belong to the right chatroom",
-            roomName, StringUtils.parseName(
+            roomName, XmppStringUtils.parseLocalpart(
                 roleEventUser3.getSourceChatRoom().getName()));
         assertEquals("Collected event does not belong to the expected user",
             fixture.userID2,
@@ -1893,7 +1895,7 @@ public class TestOperationSetMultiUserChat2
             (ChatRoomMemberRoleChangeEvent) roomUser3Col.collectedEvents.get(0);
 
         assertEquals("Collected event does not belong to the right chatroom",
-            roomName, StringUtils.parseName(
+            roomName, XmppStringUtils.parseLocalpart(
                 roleEventUser3.getSourceChatRoom().getName()));
         assertEquals("Collected event does not belong to the expected user",
             fixture.userID2,
@@ -1956,7 +1958,7 @@ public class TestOperationSetMultiUserChat2
             (ChatRoomMemberRoleChangeEvent) roomUser3Col.collectedEvents.get(0);
 
         assertEquals("Collected event does not belong to the right chatroom",
-            roomName, StringUtils.parseName(
+            roomName, XmppStringUtils.parseLocalpart(
                 roleEventUser1.getSourceChatRoom().getName()));
         assertEquals("Collected event does not belong to the expected user",
             fixture.userID2,
@@ -1967,7 +1969,7 @@ public class TestOperationSetMultiUserChat2
             ChatRoomMemberRole.MEMBER, roleEventUser1.getNewRole());
 
         assertEquals("Collected event does not belong to the right chatroom",
-            roomName, StringUtils.parseName(
+            roomName, XmppStringUtils.parseLocalpart(
                 roleEventUser3.getSourceChatRoom().getName()));
         assertEquals("Collected event does not belong to the expected user",
             fixture.userID2,
@@ -2031,7 +2033,7 @@ public class TestOperationSetMultiUserChat2
             (ChatRoomMemberRoleChangeEvent) roomUser3Col.collectedEvents.get(0);
 
         assertEquals("Collected event does not belong to the right chatroom",
-            roomName, StringUtils.parseName(
+            roomName, XmppStringUtils.parseLocalpart(
                 roleEventUser1.getSourceChatRoom().getName()));
         assertEquals("Collected event does not belong to the expected user",
             fixture.userID2,
@@ -2042,7 +2044,7 @@ public class TestOperationSetMultiUserChat2
             ChatRoomMemberRole.MODERATOR, roleEventUser1.getNewRole());
 
         assertEquals("Collected event does not belong to the right chatroom",
-            roomName, StringUtils.parseName(
+            roomName, XmppStringUtils.parseLocalpart(
                 roleEventUser3.getSourceChatRoom().getName()));
         assertEquals("Collected event does not belong to the expected user",
             fixture.userID2,
@@ -2106,7 +2108,7 @@ public class TestOperationSetMultiUserChat2
             (ChatRoomMemberRoleChangeEvent) roomUser3Col.collectedEvents.get(0);
 
         assertEquals("Collected event does not belong to the right chatroom",
-            roomName, StringUtils.parseName(
+            roomName, XmppStringUtils.parseLocalpart(
                 roleEventUser1.getSourceChatRoom().getName()));
         assertEquals("Collected event does not belong to the expected user",
             fixture.userID2,
@@ -2117,7 +2119,7 @@ public class TestOperationSetMultiUserChat2
             ChatRoomMemberRole.ADMINISTRATOR, roleEventUser1.getNewRole());
 
         assertEquals("Collected event does not belong to the right chatroom",
-            roomName, StringUtils.parseName(
+            roomName, XmppStringUtils.parseLocalpart(
                 roleEventUser3.getSourceChatRoom().getName()));
         assertEquals("Collected event does not belong to the expected user",
             fixture.userID2,

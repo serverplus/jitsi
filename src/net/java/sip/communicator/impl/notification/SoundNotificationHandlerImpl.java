@@ -24,9 +24,12 @@ import java.util.concurrent.*;
 import net.java.sip.communicator.service.gui.*;
 import net.java.sip.communicator.service.notification.*;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jitsi.service.audionotifier.*;
 import org.jitsi.service.configuration.*;
 import org.jitsi.util.*;
+import org.jitsi.utils.*;
+import org.jitsi.utils.logging.Logger;
 
 /**
  * An implementation of the <tt>SoundNotificationHandler</tt> interface.
@@ -92,7 +95,7 @@ public class SoundNotificationHandlerImpl
             = NotificationActivator.getAudioNotifier();
 
         if((audioNotifService == null)
-                || StringUtils.isNullOrEmpty(action.getDescriptor(), true))
+                || StringUtils.isBlank(action.getDescriptor()))
             return;
 
         // this is hack, seen on some os (particularly seen on macosx with

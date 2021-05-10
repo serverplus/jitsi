@@ -30,7 +30,9 @@ import net.java.sip.communicator.plugin.desktoputil.*;
 import net.java.sip.communicator.plugin.desktoputil.presence.*;
 import net.java.sip.communicator.service.protocol.*;
 
-import org.jitsi.util.*;
+import org.apache.commons.lang3.StringUtils;
+import org.jitsi.utils.*;
+import org.jitsi.utils.logging.*;
 
 /**
  * The <tt>StatusSelectorBox</tt> is a <tt>SIPCommMenu</tt> that contains
@@ -250,7 +252,7 @@ public class PresenceStatusMenu
 
         titleArea.setText(protocolProvider.getAccountID().getDisplayName());
         final String statusMessage = statusMessageMenu.getCurrentMessage();
-        if (StringUtils.isNullOrEmpty(statusMessage))
+        if (StringUtils.isEmpty(statusMessage))
         {
             this.messageArea.setText("");
             this.messageArea.setVisible(false);

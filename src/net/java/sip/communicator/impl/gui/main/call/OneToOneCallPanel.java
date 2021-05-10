@@ -28,7 +28,9 @@ import net.java.sip.communicator.plugin.desktoputil.*;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.Logger;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jitsi.util.*;
+import org.jitsi.utils.*;
 
 import com.explodingpixels.macwidgets.*;
 
@@ -350,7 +352,7 @@ public class OneToOneCallPanel
     {
         String peerAddress = peer.getAddress();
 
-        if(StringUtils.isNullOrEmpty(displayName, true))
+        if(StringUtils.isBlank(displayName))
             return peerAddress;
 
         if(!displayName.equalsIgnoreCase(peerAddress))

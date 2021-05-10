@@ -28,7 +28,8 @@ import javax.swing.border.*;
 import javax.swing.event.*;
 import javax.swing.text.*;
 
-import org.jitsi.util.*;
+import org.apache.commons.lang3.StringUtils;
+import org.jitsi.utils.*;
 
 import net.java.sip.communicator.impl.gui.*;
 import net.java.sip.communicator.impl.gui.main.contactlist.addgroup.*;
@@ -585,7 +586,7 @@ public class AddContactDialog
                 if (validationResult.size() >= 2)
                 {
                     contactAddressField.setText(validationResult.get(1));
-                    if (StringUtils.isNullOrEmpty(displayName, true))
+                    if (StringUtils.isBlank(displayName))
                     {
                         displayNameField.setText(contactAddress);
                     }

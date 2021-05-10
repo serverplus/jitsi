@@ -27,7 +27,9 @@ import net.java.sip.communicator.plugin.desktoputil.*;
 import net.java.sip.communicator.plugin.desktoputil.wizard.*;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.sip.*;
-import org.jitsi.util.*;
+
+import org.apache.commons.lang3.StringUtils;
+import org.jitsi.utils.*;
 
 /**
  * The <tt>SIPAccountRegistrationForm</tt>.
@@ -468,10 +470,10 @@ public class SIPAccountRegistrationForm
         boolean mwiEnabled = sipAccReg.isMessageWaitingIndicationsEnabled();
         connectionPanel.setMessageWaitingIndications(mwiEnabled);
 
-        if(!StringUtils.isNullOrEmpty(voicemailURI))
+        if(StringUtils.isNotEmpty(voicemailURI))
             connectionPanel.setVoicemailURI(voicemailURI);
 
-        if(!StringUtils.isNullOrEmpty(voicemailCheckURI))
+        if(StringUtils.isNotEmpty(voicemailCheckURI))
             connectionPanel.setVoicemailCheckURI(voicemailCheckURI);
 
         if(xCapEnable)

@@ -26,8 +26,10 @@ import javax.swing.*;
 
 import net.java.sip.communicator.plugin.desktoputil.*;
 import net.java.sip.communicator.util.*;
+
+import org.apache.commons.lang3.StringUtils;
 import org.jitsi.service.resources.*;
-import org.jitsi.util.*;
+import org.jitsi.utils.*;
 
 /**
  * The <tt>AbstractStatusMessageMenu<tt> is added to every status selector box
@@ -485,7 +487,7 @@ public abstract class AbstractStatusMessageMenu
         String oldMesage = getCurrentMessage();
 
         // if message is null we cleared the status message
-        if(StringUtils.isNullOrEmpty(message))
+        if(StringUtils.isEmpty(message))
         {
             clearSelectedItems();
 

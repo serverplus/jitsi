@@ -33,7 +33,9 @@ import net.java.sip.communicator.service.protocol.globalstatus.*;
 import net.java.sip.communicator.service.systray.*;
 import net.java.sip.communicator.util.*;
 import net.java.sip.communicator.util.account.*;
-import org.jitsi.util.*;
+
+import org.apache.commons.lang3.StringUtils;
+import org.jitsi.utils.*;
 
 /**
  * The <tt>GlobalStatusSelectorBox</tt> is a global status selector box, which
@@ -260,7 +262,7 @@ public class GlobalStatusSelectorBox
      */
     private void changeTooltip(String message)
     {
-        if(StringUtils.isNullOrEmpty(message))
+        if(StringUtils.isEmpty(message))
         {
             if(globalStatusMessageMenu != null)
                 globalStatusMessageMenu.clearSelectedItems();

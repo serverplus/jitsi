@@ -31,7 +31,8 @@ import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.Logger;
 
-import org.jitsi.util.*;
+import org.apache.commons.lang3.StringUtils;
+import org.jitsi.utils.*;
 
 /**
  * Message Waiting Indication Event rfc3842.
@@ -311,7 +312,7 @@ public class OperationSetMessageWaitingSipImpl
             .getAccountPropertyString(
                     ProtocolProviderFactory.VOICEMAIL_URI);
 
-        if(StringUtils.isNullOrEmpty(vmAddressURI))
+        if(StringUtils.isEmpty(vmAddressURI))
             return provider.getRegistrarConnection()
                     .getAddressOfRecord();
         else

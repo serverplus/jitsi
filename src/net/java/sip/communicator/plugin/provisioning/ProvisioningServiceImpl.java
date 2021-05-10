@@ -32,12 +32,13 @@ import net.java.sip.communicator.util.*;
 import net.java.sip.communicator.util.Logger;
 import net.java.sip.communicator.plugin.desktoputil.*;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.*;
 import org.jitsi.service.configuration.*;
 import org.jitsi.service.resources.*;
 import org.jitsi.util.*;
+import org.jitsi.utils.*;
 import org.osgi.framework.*;
-// disambiguation
 
 /**
  * Provisioning service.
@@ -160,7 +161,7 @@ public class ProvisioningServiceImpl
              url = getProvisioningUri();
          }
 
-         if(!StringUtils.isNullOrEmpty(url))
+         if(StringUtils.isNotEmpty(url))
          {
              InputStream data = retrieveConfigurationFile(url);
 

@@ -31,10 +31,10 @@ import net.java.sip.communicator.impl.protocol.sip.sdp.*;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.Logger;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jitsi.service.neomedia.*;
-import org.jitsi.service.neomedia.MediaType;
-import org.jitsi.util.*;
-// Disambiguation.
+import org.jitsi.utils.*;
+import org.jitsi.utils.MediaType;
 
 /**
  * An Operation Set defining options to auto answer/forward incoming calls.
@@ -103,7 +103,7 @@ public class OperationSetAutoAnswerSipImpl
             acc.getAccountPropertyString(AUTO_ANSWER_COND_NAME_PROP);
         headerValue =
             acc.getAccountPropertyString(AUTO_ANSWER_COND_VALUE_PROP);
-        if(!StringUtils.isNullOrEmpty(headerName))
+        if(StringUtils.isNotEmpty(headerName))
             answerConditional = true;
 
         callFwdTo =
@@ -133,10 +133,10 @@ public class OperationSetAutoAnswerSipImpl
         {
             accProps.put(AUTO_ANSWER_COND_NAME_PROP, headerName);
 
-            if(!StringUtils.isNullOrEmpty(headerValue))
+            if(StringUtils.isNotEmpty(headerValue))
                 accProps.put(AUTO_ANSWER_COND_VALUE_PROP, headerValue);
         }
-        else if(!StringUtils.isNullOrEmpty(callFwdTo))
+        else if(StringUtils.isNotEmpty(callFwdTo))
         {
             accProps.put(AUTO_ANSWER_FWD_NUM_PROP, callFwdTo);
         }
@@ -252,7 +252,7 @@ public class OperationSetAutoAnswerSipImpl
             Request invite,
             ServerTransaction serverTransaction)
     {
-        if(StringUtils.isNullOrEmpty(callFwdTo))
+        if(StringUtils.isEmpty(callFwdTo))
             return false;
 
         Response response;
@@ -328,7 +328,7 @@ public class OperationSetAutoAnswerSipImpl
 
                     if(callAnswerHeader != null)
                     {
-                        if(!StringUtils.isNullOrEmpty(headerValue))
+                        if(StringUtils.isNotEmpty(headerValue))
                         {
                             String value = callAnswerHeader.getHeaderValue();
 

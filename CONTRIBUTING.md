@@ -6,7 +6,7 @@ and follow this short guide.
 Before you open an issue on GitHub, please discuss it on one of our
 [mailing lists](https://jitsi.org/Development/MailingLists) and wait for a 
 confirmation from one of the committers. Once you have that confirmation, 
-please proceed to reporting the issue on Github, while providing as much 
+please proceed to reporting the issue on GitHub, while providing as much 
 information as possible. Mention the version of Jitsi you are using, your 
 operating system and explain how the problem can be reproduced.
 
@@ -43,7 +43,7 @@ Found a bug and know how to fix it? Great! Please read on.
 ## Contributor License Agreement
 While Jitsi is released under the
 [Apache License](https://github.com/jitsi/jitsi/blob/master/LICENSE), the copyright
-holder and principal creator is [Atlassian](https://www.atlassian.com/). To
+holder and principal creator is [8x8](https://www.8x8.com/). To
 ensure that we can continue making Jitsi available under an open source license,
 we need you to sign our Apache-based contributor 
 license agreement as either a [corporation](https://jitsi.org/ccla) or an 
@@ -51,12 +51,12 @@ license agreement as either a [corporation](https://jitsi.org/ccla) or an
 in the agreement, unfortunately, we cannot accept your contribution.
 
 ## Coding Rules
-- Please read and follow the [code conventions](https://jitsi.org/Documentation/CodeConvention),
+- Please read and follow the [code conventions](https://desktop.jitsi.org/Documentation/CodeConvention),
   especially the limit on 80 characters per line.
 - Do not reformat existing code.
-- Command-Line [build instructions](https://jitsi.org/Documentation/RetrievingAndBuildingTheSources)
-- How to set up [Eclipse](https://jitsi.org/Documentation/ConfigureEclipseNew)
-- Read the [tutorials](https://jitsi.org/Documentation/DeveloperDocumentation) (some of this information might be a bit dated, but it is still a very useful resource)
+- Command-Line [build instructions](https://desktop.jitsi.org/Documentation/RetrievingAndBuildingTheSources)
+- How to set up [Eclipse](https://desktop.jitsi.org/Documentation/ConfigureEclipseNew)
+- Read the [tutorials](https://desktop.jitsi.org/Documentation/DeveloperDocumentation) (some of this information might be a bit dated, but it is still a very useful resource)
 
 ## Creating Pull Requests
 - Perform **one** logical change per pull request.

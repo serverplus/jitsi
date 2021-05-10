@@ -23,8 +23,9 @@ import java.util.List;
 
 import javax.swing.*;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jitsi.service.resources.*;
-import org.jitsi.util.*;
+import org.jitsi.utils.*;
 
 import net.java.sip.communicator.impl.gui.*;
 import net.java.sip.communicator.impl.gui.main.contactlist.*;
@@ -565,7 +566,7 @@ public class SourceUIContact
             if(ConfigurationUtils.isHideAddressInCallHistoryTooltipEnabled())
             {
                 labelText = contactDetail.getDisplayName();
-                if(StringUtils.isNullOrEmpty(labelText))
+                if(StringUtils.isEmpty(labelText))
                     labelText = contactDetail.getDetail();
             }
             else
